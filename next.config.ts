@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
       headers: [
         { key: "Access-Control-Allow-Origin", value: origin },
         { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS" },
-        { key: "Access-Control-Allow-Headers", value: "Content-Type, PAYMENT-SIGNATURE" },
+        {
+          key: "Access-Control-Allow-Headers",
+          value: "Content-Type, PAYMENT-SIGNATURE, Access-Control-Expose-Headers",
+        },
         { key: "Access-Control-Expose-Headers", value: "PAYMENT-REQUIRED, PAYMENT-RESPONSE" },
       ],
     }];

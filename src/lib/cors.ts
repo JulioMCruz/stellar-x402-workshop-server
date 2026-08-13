@@ -4,7 +4,8 @@ export function corsHeaders(origin = process.env.CLIENT_ORIGIN || "http://localh
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, PAYMENT-SIGNATURE",
+    "Access-Control-Allow-Headers":
+      "Content-Type, PAYMENT-SIGNATURE, Access-Control-Expose-Headers",
     "Access-Control-Expose-Headers": "PAYMENT-REQUIRED, PAYMENT-RESPONSE",
     Vary: "Origin",
   };
