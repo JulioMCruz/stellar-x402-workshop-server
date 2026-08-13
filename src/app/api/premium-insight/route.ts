@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import { corsHeaders, optionsResponse } from "@/lib/cors";
-import { shortRequestId, workshopLog } from "@/lib/workshop-logger";
+import { shortRequestId, workshopDivider, workshopLog } from "@/lib/workshop-logger";
 import { createResourceServer } from "@/lib/x402";
 
 const { config, server } = createResourceServer();
@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
   const startedAt = performance.now();
   const hasPayment = request.headers.has("payment-signature");
 
+  workshopDivider(requestId, "START");
   workshopLog(requestId, "1 · REQUEST RECEIVED", {
     method: request.method,
     resource: request.nextUrl.pathname,
@@ -60,6 +61,7 @@ export async function GET(request: NextRequest) {
         network: config.network,
         durationMs,
       });
+      workshopDivider(requestId, "END", "HTTP 402");
     } else if (response.ok && response.headers.has("payment-response")) {
       workshopLog(requestId, "3 · PAYMENT VERIFIED AND SETTLED", {
         facilitator: "OpenZeppelin",
@@ -69,11 +71,13 @@ export async function GET(request: NextRequest) {
       workshopLog(requestId, "4 · PROTECTED RESOURCE DELIVERED", {
         status: response.status,
       });
+      workshopDivider(requestId, "END", `HTTP ${response.status} · PAID`);
     } else {
       workshopLog(requestId, "PAYMENT FLOW ENDED WITHOUT SETTLEMENT", {
         status: response.status,
         durationMs,
       });
+      workshopDivider(requestId, "END", `HTTP ${response.status} · NOT SETTLED`);
     }
 
     return response;
@@ -82,6 +86,7 @@ export async function GET(request: NextRequest) {
       error: error instanceof Error ? error.message : "unknown error",
       durationMs: Math.round(performance.now() - startedAt),
     });
+    workshopDivider(requestId, "END", "ERROR");
     throw error;
   }
 }
