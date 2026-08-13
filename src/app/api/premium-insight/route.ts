@@ -38,13 +38,13 @@ export async function GET(request: NextRequest) {
   const startedAt = performance.now();
   const hasPayment = request.headers.has("payment-signature");
 
-  workshopLog(requestId, "1 · PETICIÓN RECIBIDA", {
+  workshopLog(requestId, "1 · REQUEST RECEIVED", {
     method: request.method,
     resource: request.nextUrl.pathname,
   });
 
   if (hasPayment) {
-    workshopLog(requestId, "2 · FIRMA DE PAGO RECIBIDA", {
+    workshopLog(requestId, "2 · PAYMENT SIGNATURE RECEIVED", {
       signature: "hidden",
       facilitator: "OpenZeppelin",
     });
@@ -55,22 +55,22 @@ export async function GET(request: NextRequest) {
     const durationMs = Math.round(performance.now() - startedAt);
 
     if (response.status === 402) {
-      workshopLog(requestId, "2 · HTTP 402 · PAGO REQUERIDO", {
+      workshopLog(requestId, "2 · HTTP 402 · PAYMENT REQUIRED", {
         price: "$0.001 USDC",
         network: config.network,
         durationMs,
       });
     } else if (response.ok && response.headers.has("payment-response")) {
-      workshopLog(requestId, "3 · PAGO VERIFICADO Y LIQUIDADO", {
+      workshopLog(requestId, "3 · PAYMENT VERIFIED AND SETTLED", {
         facilitator: "OpenZeppelin",
         network: config.network,
         durationMs,
       });
-      workshopLog(requestId, "4 · RECURSO PROTEGIDO ENTREGADO", {
+      workshopLog(requestId, "4 · PROTECTED RESOURCE DELIVERED", {
         status: response.status,
       });
     } else {
-      workshopLog(requestId, "FLUJO FINALIZADO SIN LIQUIDACIÓN", {
+      workshopLog(requestId, "PAYMENT FLOW ENDED WITHOUT SETTLEMENT", {
         status: response.status,
         durationMs,
       });
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (error) {
-    workshopLog(requestId, "ERROR EN EL FLUJO DE PAGO", {
+    workshopLog(requestId, "PAYMENT FLOW ERROR", {
       error: error instanceof Error ? error.message : "unknown error",
       durationMs: Math.round(performance.now() - startedAt),
     });
