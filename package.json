@@ -9,7 +9,7 @@
   "scripts": {
     "setup": "node scripts/setup-env.mjs",
     "preflight": "node --env-file=.env.local scripts/preflight.mjs",
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

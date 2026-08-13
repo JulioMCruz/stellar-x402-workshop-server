@@ -281,6 +281,27 @@ In a second terminal, run the reproducible check:
 npm run test:paywall
 ```
 
+During the live demo, the server prints a safe, correlated trace. Requests that
+do not include payment stop at HTTP 402:
+
+```text
+[x402 workshop][a1b2c3d4] 1 · REQUEST RECEIVED | method=GET | resource=/api/premium-insight
+[x402 workshop][a1b2c3d4] 2 · HTTP 402 · PAYMENT REQUIRED | price=$0.001 USDC | network=stellar:testnet
+```
+
+After Freighter signs, the second request shows verification, settlement and
+resource delivery:
+
+```text
+[x402 workshop][e5f6g7h8] 1 · REQUEST RECEIVED | method=GET | resource=/api/premium-insight
+[x402 workshop][e5f6g7h8] 2 · PAYMENT SIGNATURE RECEIVED | signature=hidden | facilitator=OpenZeppelin
+[x402 workshop][e5f6g7h8] 3 · PAYMENT VERIFIED AND SETTLED | facilitator=OpenZeppelin | network=stellar:testnet
+[x402 workshop][e5f6g7h8] 4 · PROTECTED RESOURCE DELIVERED | status=200
+```
+
+The request ID links the lines from the same attempt. Sensitive payment headers,
+private keys and API keys are never printed.
+
 Expected fields include:
 
 ```json
@@ -327,7 +348,7 @@ matches the client URL and restart the server after changing `.env.local`.
 | --- | --- |
 | `npm run setup` | Create `.env.local` without overwriting an existing file |
 | `npm run preflight` | Validate required Testnet configuration without printing secrets |
-| `npm run dev` | Run the server on port 3000 |
+| `npm run dev` | Show the workshop banner and run the server on port 3000 |
 | `npm run test:paywall` | Assert the unpaid request returns a valid x402 v2 `402` |
 | `npm run check` | Run lint, unit tests and production build |
 
