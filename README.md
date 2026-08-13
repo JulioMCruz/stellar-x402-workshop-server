@@ -348,7 +348,7 @@ matches the client URL and restart the server after changing `.env.local`.
 | --- | --- |
 | `npm run setup` | Create `.env.local` without overwriting an existing file |
 | `npm run preflight` | Validate required Testnet configuration without printing secrets |
-| `npm run dev` | Run the server on port 3000 |
+| `npm run dev` | Show the workshop banner and run the server on port 3000 |
 | `npm run test:paywall` | Assert the unpaid request returns a valid x402 v2 `402` |
 | `npm run check` | Run lint, unit tests and production build |
 
